@@ -1,5 +1,13 @@
 ﻿// --- Controls Routing ---
 
+const touchControlsOverlay = document.getElementById('touchControlsOverlay');
+if (touchControlsOverlay) {
+    const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+    if (hasTouch) {
+        touchControlsOverlay.classList.remove('hidden');
+    }
+}
+
 window.addEventListener('keydown', e => {
     const key = e.key.toLowerCase();
     if ([' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'w', 'a', 's', 'd', 'e', 'q', 'x', 'z', 'p'].includes(key)) {
@@ -45,15 +53,45 @@ canvas.addEventListener('mousedown', e => {
     }
 });
 canvas.addEventListener('contextmenu', e => e.preventDefault());
+canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (playerHeldWeapon) {
+        triggerStrike();
+    } else {
+        toggleGrab();
+    }
+}, { passive: false });
 
 // Mobile touch buttons
-document.getElementById('leftTouch').addEventListener('touchstart', e => { e.preventDefault(); keys['a'] = true; });
-document.getElementById('leftTouch').addEventListener('touchend', e => { e.preventDefault(); keys['a'] = false; });
-document.getElementById('rightTouch').addEventListener('touchstart', e => { e.preventDefault(); keys['d'] = true; });
-document.getElementById('rightTouch').addEventListener('touchend', e => { e.preventDefault(); keys['d'] = false; });
-document.getElementById('jumpTouch').addEventListener('touchstart', e => { e.preventDefault(); keys[' '] = true; });
-document.getElementById('jumpTouch').addEventListener('touchend', e => { e.preventDefault(); keys[' '] = false; });
-document.getElementById('grabTouch').addEventListener('touchstart', e => { e.preventDefault(); toggleGrab(); });
+function bindTouchHold(buttonId, key) {
+    const el = document.getElementById(buttonId);
+    if (!el) return;
+
+    const onStart = e => { e.preventDefault(); keys[key] = true; };
+    const onEnd = e => { e.preventDefault(); keys[key] = false; };
+
+    el.addEventListener('touchstart', onStart, { passive: false });
+    el.addEventListener('touchend', onEnd, { passive: false });
+    el.addEventListener('touchcancel', onEnd, { passive: false });
+}
+
+function bindTouchTap(buttonId, callback) {
+    const el = document.getElementById(buttonId);
+    if (!el) return;
+    el.addEventListener('touchstart', e => {
+        e.preventDefault();
+        callback();
+    }, { passive: false });
+}
+
+bindTouchHold('leftTouch', 'a');
+bindTouchHold('rightTouch', 'd');
+bindTouchHold('jumpTouch', ' ');
+bindTouchTap('grabTouch', () => toggleGrab());
+bindTouchTap('swingTouch', () => {
+    if (playerHeldWeapon) triggerStrike();
+});
+bindTouchTap('breakTouch', () => breakSelectedBlock());
 
 function handleResize() {
     const container = canvas.parentElement;
