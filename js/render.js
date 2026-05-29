@@ -2,16 +2,50 @@
 
 function drawGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const viewAspect = Math.max(0.1, cameraRig.viewW / Math.max(1, cameraRig.viewH));
+    const scale = canvas.width / cameraRig.viewW;
+
+    if (playerBody) {
+        const lookAhead = cameraRig.isPortrait ? 18 : 58;
+        const targetX = playerBody.position.x + (playerFacingRight ? lookAhead : -lookAhead);
+        const targetY = playerBody.position.y - (cameraRig.isPortrait ? 70 : 42);
+        const followLerp = cameraRig.isPortrait ? 0.14 : 0.1;
+
+        cameraRig.x += (targetX - cameraRig.x) * followLerp;
+        cameraRig.y += (targetY - cameraRig.y) * followLerp;
+    } else {
+        cameraRig.x += (V_WIDTH * 0.5 - cameraRig.x) * 0.08;
+        cameraRig.y += (V_HEIGHT * 0.5 - cameraRig.y) * 0.08;
+    }
+
+    const halfW = cameraRig.viewW * 0.5;
+    const halfH = cameraRig.viewH * 0.5;
+
+    if (cameraRig.viewW >= V_WIDTH) {
+        cameraRig.x = V_WIDTH * 0.5;
+    } else {
+        cameraRig.x = Math.max(halfW, Math.min(V_WIDTH - halfW, cameraRig.x));
+    }
+
+    if (cameraRig.viewH >= V_HEIGHT) {
+        cameraRig.y = V_HEIGHT * 0.5;
+    } else {
+        cameraRig.y = Math.max(halfH, Math.min(V_HEIGHT - halfH, cameraRig.y));
+    }
+
+    const letterboxHeight = cameraRig.viewW / Math.max(0.1, viewAspect);
+    if (Math.abs(letterboxHeight - cameraRig.viewH) > 0.001) {
+        cameraRig.viewH = letterboxHeight;
+    }
     
     ctx.save();
-    ctx.scale(canvas.width / V_WIDTH, canvas.height / V_HEIGHT);
 
     const shakeX = motionFx.shakeMs > 0 ? (Math.random() - 0.5) * motionFx.shakePower : 0;
     const shakeY = motionFx.shakeMs > 0 ? (Math.random() - 0.5) * motionFx.shakePower : 0;
-    const zoomOffsetX = (V_WIDTH * (motionFx.zoom - 1)) * 0.5;
-    const zoomOffsetY = (V_HEIGHT * (motionFx.zoom - 1)) * 0.5;
-    ctx.translate(shakeX - zoomOffsetX, shakeY - zoomOffsetY);
-    ctx.scale(motionFx.zoom, motionFx.zoom);
+    ctx.translate(canvas.width * 0.5 + shakeX, canvas.height * 0.5 + shakeY);
+    ctx.scale(scale * motionFx.zoom, scale * motionFx.zoom);
+    ctx.translate(-cameraRig.x, -cameraRig.y);
 
     // Draw Cartesian X / Y Axes Guidelines
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
@@ -322,16 +356,18 @@ function drawGame() {
 
     if (motionFx.cinematicMs > 0) {
         const alpha = Math.min(0.35, motionFx.cinematicMs / 1000);
+        const overlayX = cameraRig.x - cameraRig.viewW * 0.5;
+        const overlayY = cameraRig.y - cameraRig.viewH * 0.5;
         ctx.save();
         ctx.fillStyle = `rgba(56, 189, 248, ${alpha})`;
-        ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
+        ctx.fillRect(overlayX, overlayY, cameraRig.viewW, cameraRig.viewH);
         ctx.fillStyle = 'rgba(255,255,255,0.95)';
         ctx.font = 'bold 42px "Inter", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('THEOREM SOLVED', V_WIDTH / 2, V_HEIGHT / 2 - 10);
+        ctx.fillText('THEOREM SOLVED', cameraRig.x, cameraRig.y - 10);
         ctx.font = 'bold 16px "Fira Code", monospace';
         ctx.fillStyle = 'rgba(255,255,255,0.9)';
-        ctx.fillText(`REWARD +${lastReward} | STREAK x${currentStreak}`, V_WIDTH / 2, V_HEIGHT / 2 + 28);
+        ctx.fillText(`REWARD +${lastReward} | STREAK x${currentStreak}`, cameraRig.x, cameraRig.y + 28);
         ctx.restore();
     }
 

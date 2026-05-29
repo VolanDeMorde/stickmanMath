@@ -93,14 +93,39 @@ bindTouchTap('swingTouch', () => {
 });
 bindTouchTap('breakTouch', () => breakSelectedBlock());
 
+function setSidebarOpen(isOpen) {
+    document.body.classList.toggle('sidebar-open', !!isOpen);
+}
+
+window.toggleSidePanel = function() {
+    setSidebarOpen(!document.body.classList.contains('sidebar-open'));
+};
+
+window.closeSidePanel = function() {
+    setSidebarOpen(false);
+};
+
+const desktopMq = window.matchMedia('(min-width: 1024px)');
+if (desktopMq && desktopMq.addEventListener) {
+    desktopMq.addEventListener('change', e => {
+        if (e.matches) {
+            setSidebarOpen(false);
+        }
+    });
+}
+
 function handleResize() {
     const container = canvas.parentElement;
     canvas.width = container.clientWidth;
     canvas.height = container.clientHeight;
     scaleX = V_WIDTH / canvas.width;
     scaleY = V_HEIGHT / canvas.height;
+    updateViewportMode();
 }
 window.addEventListener('resize', handleResize);
+window.addEventListener('orientationchange', () => {
+    setTimeout(handleResize, 90);
+});
 setTimeout(handleResize, 150);
 
 // --- Modals UI ---

@@ -55,6 +55,14 @@ let motionFx = {
     zoom: 1,
     targetZoom: 1
 };
+let baseCameraZoom = 1;
+let cameraRig = {
+    x: 500,
+    y: 300,
+    viewW: 1000,
+    viewH: 600,
+    isPortrait: false
+};
 
 // Entities Arrays
 let activeBlocks = [];
@@ -229,7 +237,7 @@ function updateMotionFx(stepMs) {
         motionFx.cinematicMs = Math.max(0, motionFx.cinematicMs - stepMs);
         motionFx.targetZoom = 1.05;
     } else {
-        motionFx.targetZoom = 1;
+        motionFx.targetZoom = baseCameraZoom;
     }
 
     motionFx.zoom += (motionFx.targetZoom - motionFx.zoom) * 0.14;
@@ -237,6 +245,28 @@ function updateMotionFx(stepMs) {
     if (storyBeat.ttlMs > 0) {
         storyBeat.ttlMs = Math.max(0, storyBeat.ttlMs - stepMs);
     }
+}
+
+function updateViewportMode() {
+    const safeWidth = Math.max(1, canvas.width || 1);
+    const safeHeight = Math.max(1, canvas.height || 1);
+    const aspect = safeWidth / safeHeight;
+    cameraRig.isPortrait = aspect < 1;
+
+    if (cameraRig.isPortrait) {
+        // Portrait keeps world shapes intact while showing more vertical space.
+        cameraRig.viewW = V_WIDTH;
+        cameraRig.viewH = cameraRig.viewW / aspect;
+        baseCameraZoom = 0.95;
+    } else {
+        // Landscape uses normal framing and adapts width to the device ratio.
+        cameraRig.viewH = V_HEIGHT;
+        cameraRig.viewW = cameraRig.viewH * aspect;
+        baseCameraZoom = 1;
+    }
+
+    motionFx.zoom = baseCameraZoom;
+    motionFx.targetZoom = baseCameraZoom;
 }
 
 function getRankByScore(score) {

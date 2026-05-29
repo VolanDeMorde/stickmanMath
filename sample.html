@@ -35,6 +35,9 @@
 
         <!-- Utility Bar -->
         <div class="flex items-center gap-1.5 md:gap-2 lg:gap-3">
+            <button onclick="toggleSidePanel()" class="lg:hidden px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold rounded-lg text-slate-200 border border-slate-700">
+                Panel
+            </button>
             <!-- Undo Button -->
             <button onclick="triggerUndo()" class="px-2.5 md:px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-[11px] md:text-xs font-bold rounded-lg text-amber-400 border border-amber-500/20 flex items-center gap-1 transition-all">
                 <span>Undo</span>
@@ -55,10 +58,15 @@
         </div>
     </header>
 
-    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative min-h-0">
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative min-h-0 app-shell">
+        <button id="sidebarScrim" onclick="closeSidePanel()" class="sidebar-scrim" aria-label="Close side panel"></button>
         
         <!-- Sidebar Navigation Controls -->
-        <aside class="w-full lg:w-80 h-[42vh] sm:h-[40vh] lg:h-auto bg-slate-900/95 border-b lg:border-b-0 lg:border-r border-slate-800 flex flex-col z-10 overflow-y-auto shrink-0">
+        <aside id="sidePanel" class="w-full lg:w-80 h-[42vh] sm:h-[40vh] lg:h-auto bg-slate-900/95 border-b lg:border-b-0 lg:border-r border-slate-800 flex flex-col z-10 overflow-y-auto shrink-0 app-sidebar">
+            <div class="lg:hidden sticky top-0 z-20 bg-slate-950/95 border-b border-slate-800 px-4 py-2 flex items-center justify-between">
+                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Control Panel</span>
+                <button onclick="closeSidePanel()" class="px-2 py-1 rounded bg-slate-800 text-[10px] font-bold text-slate-300">Close</button>
+            </div>
             
             <!-- Campaign Setup -->
             <div id="campaignPanel" class="p-5 flex flex-col gap-4 flex-1">

@@ -28,3 +28,49 @@ body {
 #storyBeatBanner {
     text-shadow: 0 0 10px rgba(34, 211, 238, 0.35);
 }
+
+.app-shell {
+    position: relative;
+}
+
+.sidebar-scrim {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .app-sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: min(84vw, 360px);
+        height: auto;
+        border-right: 1px solid #1e293b;
+        border-bottom: none;
+        transform: translateX(-102%);
+        transition: transform 220ms ease;
+        z-index: 35;
+        backdrop-filter: blur(6px);
+    }
+
+    body.sidebar-open .app-sidebar {
+        transform: translateX(0);
+    }
+
+    .sidebar-scrim {
+        position: absolute;
+        inset: 0;
+        display: block;
+        background: rgba(2, 6, 23, 0.62);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+        z-index: 30;
+        border: 0;
+    }
+
+    body.sidebar-open .sidebar-scrim {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
