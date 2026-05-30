@@ -1,0 +1,550 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Fira+Code:wght@500;700&display=swap');
+
+:root {
+  --bg-0: #08111a;
+  --bg-1: #0f1f2e;
+  --bg-2: #132a3d;
+  --panel: #101c2a;
+  --panel-border: #1d3349;
+  --text: #d4e4f6;
+  --muted: #8ea5bd;
+  --accent: #ffb703;
+  --ok: #48ca7a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255, 183, 3, 0.12), transparent 35%),
+    radial-gradient(circle at 85% 20%, rgba(72, 202, 122, 0.12), transparent 40%),
+    linear-gradient(180deg, var(--bg-2), var(--bg-0));
+}
+
+.app-shell {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--panel-border);
+  background: linear-gradient(135deg, rgba(16, 28, 42, 0.94), rgba(19, 42, 61, 0.94));
+  border-radius: 14px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: clamp(1.1rem, 1.5vw, 1.6rem);
+}
+
+.app-header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.open-link {
+  color: #0f1b29;
+  text-decoration: none;
+  background: var(--accent);
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-toggle {
+  display: none;
+  border: 1px solid var(--panel-border);
+  background: #0a1724;
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+
+.app-main {
+  min-height: 78vh;
+  display: grid;
+  grid-template-columns: minmax(250px, 360px) 1fr;
+  gap: 14px;
+}
+
+.task-panel,
+.game-panel {
+  border-radius: 14px;
+  border: 1px solid var(--panel-border);
+  background: rgba(16, 28, 42, 0.92);
+}
+
+.task-panel {
+  padding: 16px;
+}
+
+.task-panel h2 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+}
+
+.task-panel ol {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.game-panel {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.drawer-scrim {
+  display: none;
+}
+
+.game-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--panel-border);
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-family: 'Fira Code', monospace;
+}
+
+.game-panel-header.stacked {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.view-mode-tabs {
+  display: inline-flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.view-tab {
+  border: 1px solid var(--panel-border);
+  background: #0a1724;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.view-tab.active {
+  color: #0f1b29;
+  background: var(--accent);
+  border-color: #ffc74f;
+  font-weight: 700;
+}
+
+.status-pill {
+  color: #062714;
+  background: var(--ok);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-weight: 700;
+}
+
+.legacy-control-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--panel-border);
+  background: rgba(7, 17, 31, 0.9);
+}
+
+.legacy-control-btn {
+  border: 1px solid var(--panel-border);
+  background: #0a1724;
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 9px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.73rem;
+  cursor: pointer;
+}
+
+.legacy-control-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.bridge-status {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-family: 'Fira Code', monospace;
+  color: var(--muted);
+}
+
+.bridge-status.ready {
+  color: #48ca7a;
+}
+
+.bridge-status.loading {
+  color: #ffc74f;
+}
+
+.legacy-shortcuts-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--panel-border);
+  background: rgba(6, 14, 24, 0.92);
+}
+
+.shortcut-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--panel-border);
+  background: #091624;
+  color: #9db4ca;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.68rem;
+}
+
+.legacy-hud-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--panel-border);
+  background: rgba(8, 18, 30, 0.88);
+}
+
+.hud-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--panel-border);
+  background: #0b1a29;
+  color: #d4e4f6;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.71rem;
+}
+
+.react-settings-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--panel-border);
+  background: rgba(7, 16, 28, 0.9);
+}
+
+.settings-group {
+  display: grid;
+  gap: 8px;
+}
+
+.settings-label {
+  color: var(--muted);
+  font-size: 0.71rem;
+  font-family: 'Fira Code', monospace;
+}
+
+.follow-control {
+  display: grid;
+  gap: 8px;
+  min-width: min(320px, 100%);
+}
+
+.follow-range {
+  width: 100%;
+}
+
+.game-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  min-height: 640px;
+}
+
+.react-canvas-shell {
+  position: relative;
+  display: block;
+}
+
+.react-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  min-height: 640px;
+}
+
+.react-touch-pad {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+
+.pad-row {
+  display: flex;
+  gap: 8px;
+}
+
+.pad-btn {
+  border: 1px solid var(--panel-border);
+  background: rgba(6, 14, 24, 0.9);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-family: 'Fira Code', monospace;
+  touch-action: none;
+  user-select: none;
+}
+
+.pad-btn:active {
+  background: var(--accent);
+  color: #0f1b29;
+  border-color: #ffc74f;
+}
+
+@media (max-width: 1024px) {
+  .app-main {
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+
+  .game-frame {
+    min-height: 72vh;
+  }
+
+  .bridge-status {
+    margin-left: 0;
+  }
+
+  .react-touch-pad {
+    left: 10px;
+    right: auto;
+    bottom: 10px;
+  }
+
+  .pad-btn {
+    min-width: 62px;
+    padding: 10px 12px;
+  }
+
+  .panel-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .task-panel-drawer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(86vw, 360px);
+    overflow: auto;
+    z-index: 30;
+    transform: translateX(-104%);
+    transition: transform 200ms ease;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  }
+
+  .app-shell.panel-open .task-panel-drawer {
+    transform: translateX(0);
+  }
+
+  .drawer-scrim {
+    position: absolute;
+    inset: 0;
+    display: block;
+    border: 0;
+    background: rgba(6, 12, 20, 0.6);
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+
+  .app-shell.panel-open .drawer-scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+    gap: 10px;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .app-header h1 {
+    font-size: 1.02rem;
+    line-height: 1.2;
+  }
+
+  .app-header p {
+    font-size: 0.83rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .open-link {
+    width: 100%;
+    text-align: center;
+  }
+
+  .panel-toggle {
+    width: 100%;
+  }
+
+  .app-main {
+    gap: 10px;
+  }
+
+  .task-panel {
+    padding: 12px;
+  }
+
+  .task-panel ol {
+    gap: 7px;
+    font-size: 0.84rem;
+  }
+
+  .game-panel-header {
+    padding: 10px;
+  }
+
+  .view-tab,
+  .legacy-control-btn {
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 0.72rem;
+  }
+
+  .legacy-control-strip,
+  .legacy-shortcuts-strip,
+  .legacy-hud-strip,
+  .react-settings-strip {
+    padding: 8px 10px;
+    gap: 7px;
+  }
+
+  .shortcut-chip,
+  .hud-chip {
+    min-height: 30px;
+    padding: 5px 9px;
+    font-size: 0.67rem;
+  }
+
+  .game-frame,
+  .react-canvas {
+    min-height: 64vh;
+  }
+
+  .react-touch-pad {
+    left: 8px;
+    right: auto;
+    bottom: 8px;
+    gap: 6px;
+  }
+
+  .pad-row {
+    gap: 6px;
+  }
+
+  .pad-btn {
+    min-width: 58px;
+    min-height: 42px;
+    padding: 9px 10px;
+    font-size: 0.7rem;
+  }
+
+  .task-panel-drawer {
+    width: min(92vw, 340px);
+  }
+
+  .follow-control {
+    min-width: 100%;
+  }
+
+  .follow-range {
+    height: 28px;
+  }
+}
+
+@media (max-width: 420px) {
+  .view-mode-tabs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .react-settings-strip .view-mode-tabs {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .view-tab {
+    text-align: center;
+  }
+
+  .bridge-status {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
