@@ -246,6 +246,36 @@ body {
   font-size: 0.68rem;
 }
 
+.legacy-move-strip {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--panel-border);
+  background: rgba(8, 16, 26, 0.9);
+}
+
+.move-btn {
+  border: 1px solid var(--panel-border);
+  background: #0c1b2b;
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.73rem;
+  min-height: 40px;
+  min-width: 72px;
+  touch-action: none;
+}
+
+.move-btn:active {
+  background: var(--accent);
+  color: #0f1b29;
+}
+
+.move-btn:disabled {
+  opacity: 0.45;
+}
+
 .legacy-hud-strip {
   display: flex;
   flex-wrap: wrap;
@@ -479,6 +509,7 @@ body {
 
   .legacy-control-strip,
   .legacy-shortcuts-strip,
+  .legacy-move-strip,
   .legacy-hud-strip,
   .react-settings-strip {
     padding: 8px 10px;

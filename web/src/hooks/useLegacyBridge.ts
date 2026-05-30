@@ -5,6 +5,7 @@ export type LegacyCommand =
   | { type: 'break' }
   | { type: 'reset' }
   | { type: 'toggleMute' }
+  | { type: 'setKey'; key: 'a' | 'd' | ' '; down: boolean }
   | { type: 'mode'; value: 'campaign' | 'sandbox' }
 
 export type LegacySnapshot = {
@@ -49,6 +50,7 @@ export function useLegacyBridge() {
           breakSelectedBlock?: () => void
           resetCurrentLevel?: () => void
           toggleMute?: () => void
+          setVirtualKey?: (key: 'a' | 'd' | ' ', isDown: boolean) => void
           setMode?: (mode: 'campaign' | 'sandbox') => void
           getBridgeSnapshot?: () => LegacySnapshot
         })
@@ -69,6 +71,9 @@ export function useLegacyBridge() {
           return true
         case 'toggleMute':
           targetWindow.toggleMute?.()
+          return true
+        case 'setKey':
+          targetWindow.setVirtualKey?.(command.key, command.down)
           return true
         case 'mode':
           targetWindow.setMode?.(command.value)

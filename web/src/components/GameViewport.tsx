@@ -81,6 +81,10 @@ export function GameViewport() {
     setReactInput((prev) => ({ ...prev, [key]: value }))
   }
 
+  const holdLegacyKey = (key: 'a' | 'd' | ' ', down: boolean) => {
+    runCommand({ type: 'setKey', key, down })
+  }
+
   return (
     <section className="game-panel">
       <div className="game-panel-header stacked">
@@ -128,6 +132,47 @@ export function GameViewport() {
             <span className="shortcut-chip">M Sound</span>
             <span className="shortcut-chip">1 Campaign</span>
             <span className="shortcut-chip">2 Sandbox</span>
+          </div>
+          <div className="legacy-move-strip" aria-label="Legacy movement controls">
+            <button
+              type="button"
+              className="move-btn"
+              disabled={!isReady}
+              onPointerDown={() => holdLegacyKey('a', true)}
+              onPointerUp={() => holdLegacyKey('a', false)}
+              onPointerCancel={() => holdLegacyKey('a', false)}
+              onPointerLeave={(event) => {
+                if (event.buttons === 0) holdLegacyKey('a', false)
+              }}
+            >
+              Left
+            </button>
+            <button
+              type="button"
+              className="move-btn"
+              disabled={!isReady}
+              onPointerDown={() => holdLegacyKey(' ', true)}
+              onPointerUp={() => holdLegacyKey(' ', false)}
+              onPointerCancel={() => holdLegacyKey(' ', false)}
+              onPointerLeave={(event) => {
+                if (event.buttons === 0) holdLegacyKey(' ', false)
+              }}
+            >
+              Jump
+            </button>
+            <button
+              type="button"
+              className="move-btn"
+              disabled={!isReady}
+              onPointerDown={() => holdLegacyKey('d', true)}
+              onPointerUp={() => holdLegacyKey('d', false)}
+              onPointerCancel={() => holdLegacyKey('d', false)}
+              onPointerLeave={(event) => {
+                if (event.buttons === 0) holdLegacyKey('d', false)
+              }}
+            >
+              Right
+            </button>
           </div>
           <div className="legacy-hud-strip" aria-label="React HUD mirror">
             <span className="hud-chip">Mode: {snapshot.mode}</span>

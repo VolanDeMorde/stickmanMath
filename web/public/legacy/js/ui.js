@@ -37,6 +37,10 @@ window.addEventListener('keyup', e => {
     keys[e.key.toLowerCase()] = false;
 });
 
+window.setVirtualKey = function(key, isDown) {
+    keys[String(key).toLowerCase()] = !!isDown;
+};
+
 canvas.addEventListener('mousedown', e => {
     if (e.button === 0) { // Left-click
         if (playerHeldWeapon) {
