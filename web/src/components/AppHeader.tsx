@@ -22,7 +22,7 @@ export function AppHeader({ title, subtitle, isPanelOpen, onTogglePanel }: AppHe
         >
           {isPanelOpen ? 'Close Panel' : 'Open Panel'}
         </button>
-        <a className="open-link" href="/legacy/sample.html" target="_blank" rel="noreferrer">
+        <a className="open-link" href="/legacy/index.html" target="_blank" rel="noreferrer">
           Open Legacy Game
         </a>
       </div>

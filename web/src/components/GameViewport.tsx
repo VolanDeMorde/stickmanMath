@@ -186,7 +186,7 @@ export function GameViewport() {
             ref={iframeRef}
             onLoad={onFrameLoad}
             title="Legacy Stickman Game"
-            src="/legacy/sample.html"
+            src="/legacy/index.html"
             className="game-frame"
             allow="fullscreen"
           />

@@ -7,7 +7,7 @@ export function LegacyGameViewport() {
       </div>
       <iframe
         title="Legacy Stickman Game"
-        src="/legacy/sample.html"
+        src="/legacy/index.html"
         className="game-frame"
         allow="fullscreen"
       />
