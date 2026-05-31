@@ -52,37 +52,110 @@ function addReachRoute(baseX, topY, rng, count = 3) {
 }
 
 function createBossLevel(tierKey, stageNumber, rng, ramp) {
-    const heavy = randomInt(rng, 8, 14 + Math.floor(ramp / 3));
-    const support = randomInt(rng, 2, 6 + Math.floor(ramp / 4));
-    const targetSign = tierKey === 'basic' ? 1 : (rng() > 0.55 ? -1 : 1);
-    const expression = tierKey === 'basic' ? `${heavy} + ${support}` : `sqrt(${heavy * heavy}) + (${targetSign < 0 ? '-' : ''}${support})`;
-    const target = tierKey === 'basic' ? (heavy + support) : (heavy + targetSign * support);
+    const phase = Math.floor((stageNumber - 1) / 10);
+
+    if (tierKey === 'basic') {
+        const a = randomInt(rng, 6 + phase, 11 + phase * 2);
+        const b = randomInt(rng, 4 + phase, 9 + phase * 2);
+        const c = randomInt(rng, 3 + phase, 8 + phase * 2);
+        const decoy = randomInt(rng, 2 + phase, 6 + phase);
+        const target = a + b + c;
+        const expression = `${a} + ${b} + ${c}`;
+
+        return {
+            id: stageNumber,
+            tierKey,
+            isBoss: true,
+            title: `Theorem Colossus ${stageNumber}`,
+            desc: 'Boss milestone: execute a multi-merge chain and route the final value through the pressure lane.',
+            target,
+            expression,
+            init: () => {
+                spawnPlatform(120, 430, 280, 20);
+                spawnPlatform(420, 350, 220, 20);
+                spawnPlatform(680, 280, 170, 20);
+                spawnPlatform(520, 230, 120, 18);
+                spawnBlock(180, 240, a);
+                spawnBlock(320, 220, b);
+                spawnBlock(520, 170, c);
+                spawnBlock(750, 140, decoy);
+                spawnWeapon(300, 450, 'FACTOR');
+                spawnOriginPortal(560, 250);
+                spawnGate(860, 260, target);
+            }
+        };
+    }
+
+    if (tierKey === 'intermediate') {
+        const core = randomInt(rng, 7 + phase, 12 + phase * 2);
+        const bonus = randomInt(rng, 3 + phase, 7 + phase);
+        const delta = randomInt(rng, 3 + phase, 8 + phase);
+        const sign = rng() > 0.45 ? -1 : 1;
+        const target = core + bonus + sign * delta;
+        const expression = `abs(-${core}) + ${bonus} + (${sign < 0 ? '-' : ''}${delta})`;
+
+        return {
+            id: stageNumber,
+            tierKey,
+            isBoss: true,
+            title: `Theorem Colossus ${stageNumber}`,
+            desc: 'Boss milestone: convert signs under pressure and finish with a controlled signed collision.',
+            target,
+            expression,
+            init: () => {
+                spawnPlatform(130, 430, 280, 20);
+                spawnPlatform(410, 350, 210, 20);
+                spawnPlatform(650, 290, 170, 20);
+                spawnPlatform(500, 230, 120, 18);
+                if (target < 0) addReachRoute(250, 390, rng, 4);
+                spawnBlock(190, 240, -core);
+                spawnBlock(430, 210, bonus);
+                spawnBlock(700, 160, delta);
+                spawnBlock(560, 140, randomInt(rng, 2, 7 + phase));
+                spawnWeapon(240, 450, 'ABS');
+                spawnWeapon(500, 450, 'MINUS');
+                spawnWeapon(700, 450, 'FACTOR');
+                spawnOriginPortal(560, 255);
+                spawnGate(860, target < 0 ? 145 : 275, target);
+            }
+        };
+    }
+
+    const root = randomInt(rng, 6 + Math.floor(phase / 2), 10 + phase);
+    const square = root * root;
+    const shield = randomInt(rng, 4 + phase, 9 + phase * 2);
+    const bonus = randomInt(rng, 3 + phase, 8 + phase * 2);
+    const swing = randomInt(rng, 4 + phase, 10 + phase * 2);
+    const sign = rng() > 0.4 ? -1 : 1;
+    const target = root + shield + bonus + sign * swing;
+    const expression = `sqrt(${square}) + abs(-${shield}) + ${bonus} + (${sign < 0 ? '-' : ''}${swing})`;
 
     return {
         id: stageNumber,
         tierKey,
         isBoss: true,
         title: `Theorem Colossus ${stageNumber}`,
-        desc: 'Boss milestone: combine multiple tools under pressure and land the exact gate value.',
+        desc: 'Boss milestone: chain radical extraction, sign recovery, and a final swing operation under pressure.',
         target,
         expression,
         init: () => {
-            spawnPlatform(120, 430, 260, 20);
+            spawnPlatform(120, 430, 280, 20);
             spawnPlatform(390, 360, 220, 20);
-            spawnPlatform(670, 300, 180, 20);
-            if (target < 0) {
-                addReachRoute(260, 390, rng, 4);
-            }
-            spawnBlock(180, 240, heavy);
-            spawnBlock(460, 200, support);
-            spawnWeapon(280, 450, 'FACTOR');
-            spawnWeapon(520, 450, 'SQRT');
-            spawnWeapon(740, 450, 'MINUS');
-            if (tierKey !== 'basic') {
-                spawnWeapon(640, 450, 'ABS');
-            }
-            spawnOriginPortal(520, 250);
-            spawnGate(840, target < 0 ? 140 : 390, target);
+            spawnPlatform(650, 300, 190, 20);
+            spawnPlatform(500, 240, 140, 18);
+            spawnPlatform(740, 200, 110, 16);
+            if (target < 0) addReachRoute(260, 390, rng, 5);
+            spawnBlock(170, 250, square);
+            spawnBlock(360, 220, -shield);
+            spawnBlock(570, 170, bonus);
+            spawnBlock(760, 150, swing);
+            spawnBlock(620, 120, randomInt(rng, 5, 11 + phase));
+            spawnWeapon(220, 450, 'SQRT');
+            spawnWeapon(360, 450, 'ABS');
+            spawnWeapon(540, 450, 'MINUS');
+            spawnWeapon(720, 450, 'FACTOR');
+            spawnOriginPortal(560, 250);
+            spawnGate(860, target < 0 ? 130 : 250, target);
         }
     };
 }
