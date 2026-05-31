@@ -55,8 +55,8 @@ function createBossLevel(tierKey, stageNumber, rng, ramp) {
     const heavy = randomInt(rng, 8, 14 + Math.floor(ramp / 3));
     const support = randomInt(rng, 2, 6 + Math.floor(ramp / 4));
     const targetSign = tierKey === 'basic' ? 1 : (rng() > 0.55 ? -1 : 1);
-    const target = targetSign * Math.max(3, Math.round((heavy + support) / 2));
     const expression = tierKey === 'basic' ? `${heavy} + ${support}` : `sqrt(${heavy * heavy}) + (${targetSign < 0 ? '-' : ''}${support})`;
+    const target = tierKey === 'basic' ? (heavy + support) : (heavy + targetSign * support);
 
     return {
         id: stageNumber,
@@ -100,6 +100,110 @@ function createLevelDescriptor(tierKey, stageIndex) {
     }
 
     if (tierKey === 'basic') {
+        if (phase >= 1) {
+            const advancedVariant = stageIndex % 4;
+
+            if (advancedVariant === 0) {
+                const terms = [
+                    randomInt(rng, 2 + phase, 5 + phase * 2),
+                    randomInt(rng, 2 + phase, 6 + phase * 2),
+                    randomInt(rng, 2 + phase, 6 + phase * 2),
+                    randomInt(rng, 1 + phase, 4 + phase * 2)
+                ];
+                const target = terms.reduce((sum, value) => sum + value, 0);
+                const expression = terms.join(' + ');
+                return {
+                    id: stageNumber,
+                    tierKey,
+                    title: 'Momentum Sum Chain',
+                    desc: 'Build a four-block combo in order. Control rebounds so each merge lands cleanly.',
+                    target,
+                    expression,
+                    init: () => {
+                        spawnPlatform(180, 430, 280, 20);
+                        spawnPlatform(460, 360, 200, 20);
+                        spawnPlatform(660, 290, 130, 20);
+                        spawnBlock(220, 250, terms[0]);
+                        spawnBlock(320, 220, terms[1]);
+                        spawnBlock(500, 180, terms[2]);
+                        spawnBlock(690, 140, terms[3]);
+                        spawnGate(840, 390, target);
+                    }
+                };
+            }
+
+            if (advancedVariant === 1) {
+                const base = randomInt(rng, 4 + phase, 8 + phase * 2);
+                const portalBonus = 2 + Math.floor(phase / 2);
+                const target = base + portalBonus;
+                const expression = `${base} + ${portalBonus}`;
+                return {
+                    id: stageNumber,
+                    tierKey,
+                    title: 'Portal Relay Expansion',
+                    desc: 'Use the origin portal repeatedly and convert the small units into a stable finishing value.',
+                    target,
+                    expression,
+                    init: () => {
+                        spawnPlatform(170, 420, 260, 20);
+                        spawnPlatform(430, 340, 180, 20);
+                        spawnPlatform(630, 280, 120, 20);
+                        spawnBlock(230, 230, base);
+                        spawnOriginPortal(470, 285);
+                        spawnGate(840, 390, target);
+                    }
+                };
+            }
+
+            if (advancedVariant === 2) {
+                const a = randomInt(rng, 3 + phase, 7 + phase * 2);
+                const b = randomInt(rng, 3 + phase, 7 + phase * 2);
+                const c = randomInt(rng, 2 + phase, 6 + phase * 2);
+                const target = a + b + c;
+                const expression = `${a} + ${b} + ${c}`;
+                return {
+                    id: stageNumber,
+                    tierKey,
+                    title: 'Tier Ladder Merge',
+                    desc: 'Merge across different platform heights and carry the final total to the upper gate lane.',
+                    target,
+                    expression,
+                    init: () => {
+                        spawnPlatform(180, 430, 240, 20);
+                        spawnPlatform(430, 350, 180, 20);
+                        spawnPlatform(640, 270, 130, 20);
+                        spawnBlock(220, 250, a);
+                        spawnBlock(460, 210, b);
+                        spawnBlock(680, 160, c);
+                        spawnGate(840, 290, target);
+                    }
+                };
+            }
+
+            const base = randomInt(rng, 5 + phase, 9 + phase * 2);
+            const extra = randomInt(rng, 2 + phase, 5 + phase);
+            const bonus = 1;
+            const target = base + extra + bonus;
+            const expression = `${base} + ${extra} + ${bonus}`;
+            return {
+                id: stageNumber,
+                tierKey,
+                title: 'Gate Pressure Sprint',
+                desc: 'Assemble the sum under pressure with staggered spawn heights and a narrow finish lane.',
+                target,
+                expression,
+                init: () => {
+                    spawnPlatform(170, 430, 250, 20);
+                    spawnPlatform(420, 350, 170, 20);
+                    spawnPlatform(610, 300, 120, 20);
+                    spawnBlock(210, 250, base);
+                    spawnBlock(460, 200, extra);
+                    spawnOriginPortal(630, 250);
+                    spawnGate(840, 330, target);
+                }
+            };
+        }
+
         const variant = stageIndex % 3;
 
         if (variant === 0) {
