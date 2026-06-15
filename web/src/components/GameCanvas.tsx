@@ -81,7 +81,7 @@ export function GameCanvas({
     const WORLD_H = 600
     let solved = false
     let gateOpen = false
-    let processedCommands = { ...commandTicksRef.current }
+    const processedCommands = { ...commandTicksRef.current }
     let storyBeat = isBoss ? `BOSS THEOREM ${stage}` : `STAGE ${stage}`
     let storyBeatTtl = 220
 
