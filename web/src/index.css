@@ -42,6 +42,125 @@ body {
   gap: 14px;
 }
 
+.app-shell-game {
+  max-width: none;
+  padding: 10px;
+  gap: 0;
+}
+
+.menu-screen {
+  min-height: calc(100vh - 20px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.menu-card {
+  width: min(520px, 100%);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 28px;
+  background: linear-gradient(160deg, rgba(8, 20, 33, 0.95), rgba(14, 30, 46, 0.92));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.menu-card h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+}
+
+.menu-card p {
+  margin: 8px 0 20px;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.menu-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.menu-btn {
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(10, 23, 36, 0.96);
+  color: var(--text);
+  padding: 12px 14px;
+  font-family: 'Fira Code', monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.menu-btn.primary {
+  background: var(--accent);
+  color: #0f1b29;
+  border-color: #ffc74f;
+}
+
+.howto-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 8, 14, 0.78);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+  padding: 14px;
+}
+
+.howto-card {
+  width: min(540px, 100%);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 22px;
+  background: rgba(9, 20, 33, 0.97);
+}
+
+.howto-card h2 {
+  margin: 0 0 12px;
+}
+
+.howto-card p {
+  margin: 7px 0;
+  color: #c4d8ee;
+}
+
+.game-only-shell {
+  min-height: calc(100vh - 20px);
+  position: relative;
+}
+
+.legacy-shell {
+  min-height: calc(100vh - 20px);
+  position: relative;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(6, 14, 24, 0.95);
+}
+
+.legacy-frame {
+  width: 100%;
+  height: calc(100vh - 20px);
+  border: 0;
+  display: block;
+}
+
+.menu-fab {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 40;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: rgba(8, 21, 34, 0.96);
+  color: var(--text);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  padding: 8px 11px;
+  cursor: pointer;
+}
+
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -364,14 +483,18 @@ body {
 
 .pad-btn {
   border: 1px solid var(--panel-border);
-  background: rgba(6, 14, 24, 0.9);
+  background: rgba(6, 14, 24, 0.95);
   color: var(--text);
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 0.72rem;
+  min-width: 82px;
+  min-height: 56px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
   font-family: 'Fira Code', monospace;
   touch-action: none;
   user-select: none;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.32);
 }
 
 .pad-btn:active {
@@ -401,8 +524,9 @@ body {
   }
 
   .pad-btn {
-    min-width: 62px;
-    padding: 10px 12px;
+    min-width: 78px;
+    min-height: 54px;
+    padding: 11px 13px;
   }
 
   .panel-toggle {
@@ -450,6 +574,28 @@ body {
   .app-shell {
     padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
     gap: 10px;
+  }
+
+  .app-shell-game {
+    padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
+  }
+
+  .menu-card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .menu-btn {
+    min-height: 48px;
+  }
+
+  .menu-fab {
+    top: 10px;
+    left: 10px;
+  }
+
+  .legacy-frame {
+    height: calc(100vh - 16px);
   }
 
   .app-header {
@@ -540,10 +686,10 @@ body {
   }
 
   .pad-btn {
-    min-width: 58px;
-    min-height: 42px;
-    padding: 9px 10px;
-    font-size: 0.7rem;
+    min-width: 70px;
+    min-height: 50px;
+    padding: 9px 11px;
+    font-size: 0.82rem;
   }
 
   .task-panel-drawer {

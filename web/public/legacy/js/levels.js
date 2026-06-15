@@ -174,7 +174,7 @@ function createLevelDescriptor(tierKey, stageIndex) {
 
     if (tierKey === 'basic') {
         if (phase >= 1) {
-            const advancedVariant = stageIndex % 4;
+            const advancedVariant = stageIndex % 5;
 
             if (advancedVariant === 0) {
                 const terms = [
@@ -253,6 +253,32 @@ function createLevelDescriptor(tierKey, stageIndex) {
                 };
             }
 
+            if (advancedVariant === 3) {
+                const a = randomInt(rng, 7 + phase, 12 + phase * 2);
+                const b = randomInt(rng, 3 + phase, 7 + phase);
+                const bonus = randomInt(rng, 1, 2 + Math.floor(phase / 2));
+                const target = a - b + bonus;
+                const expression = `${a} - ${b} + ${bonus}`;
+                return {
+                    id: stageNumber,
+                    tierKey,
+                    title: 'Subtraction Combo Route',
+                    desc: 'Subtract with the minus blade, then add a small bonus block to finish exactly.',
+                    target,
+                    expression,
+                    init: () => {
+                        spawnPlatform(170, 430, 250, 20);
+                        spawnPlatform(420, 350, 170, 20);
+                        spawnPlatform(610, 300, 120, 20);
+                        spawnBlock(210, 250, a);
+                        spawnBlock(460, 200, b);
+                        spawnBlock(640, 180, bonus);
+                        spawnWeapon(540, 450, 'MINUS');
+                        spawnGate(840, 330, target);
+                    }
+                };
+            }
+
             const base = randomInt(rng, 5 + phase, 9 + phase * 2);
             const extra = randomInt(rng, 2 + phase, 5 + phase);
             const bonus = 1;
@@ -277,7 +303,7 @@ function createLevelDescriptor(tierKey, stageIndex) {
             };
         }
 
-        const variant = stageIndex % 3;
+        const variant = stageIndex % 4;
 
         if (variant === 0) {
             const a = randomInt(rng, 1, 3 + Math.floor(ramp / 3));
@@ -317,6 +343,29 @@ function createLevelDescriptor(tierKey, stageIndex) {
                     spawnBlock(260, 220, base);
                     spawnOriginPortal(470, 290);
                     spawnGate(800, 410, base + 1);
+                }
+            };
+        }
+
+        if (variant === 2) {
+            const a = randomInt(rng, 3, 7 + Math.floor(ramp / 4));
+            const b = randomInt(rng, 1, Math.max(2, a - 1));
+            const expression = `${a} - ${b}`;
+            return {
+                id: stageNumber,
+                tierKey,
+                title: 'Subtraction Starter',
+                desc: 'Use the minus blade on one block, then fuse to match the subtraction target.',
+                target: a - b,
+                expression,
+                init: () => {
+                    spawnPlatform(200, 420, 240, 20);
+                    spawnPlatform(500, 350, 160, 20);
+                    if (extraPlatform) spawnPlatform(360, 290, 120, 20);
+                    spawnBlock(250, 240, a);
+                    spawnBlock(420, 210, b);
+                    spawnWeapon(520, 450, 'MINUS');
+                    spawnGate(800, 410, a - b);
                 }
             };
         }

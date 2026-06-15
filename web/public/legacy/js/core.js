@@ -137,12 +137,17 @@ function updateDifficultyButtons() {
 function applyLevelMeta(level) {
     const tier = difficultyMeta[level.tierKey];
     const badge = document.getElementById('tierBadge');
+    const expressionPreview = renderExpressionPreview(level);
 
     document.getElementById('lvlLabel').innerText = `${tier.label} Theorem ${level.id}`;
     document.getElementById('lvlTitle').innerText = level.title;
     document.getElementById('lvlDesc').innerText = level.desc;
     document.getElementById('lvlGoal').innerText = level.target;
-    document.getElementById('lvlExpr').innerText = renderExpressionPreview(level);
+    document.getElementById('lvlExpr').innerText = expressionPreview;
+    const equationBackdrop = document.getElementById('equationBackdropDisplay');
+    if (equationBackdrop) {
+        equationBackdrop.innerText = expressionPreview;
+    }
     document.getElementById('stylePillarDisplay').innerText = STYLE_PILLARS[level.id % STYLE_PILLARS.length];
 
     badge.className = `text-[10px] font-bold px-1.5 py-0.5 rounded ${tier.badgeClass}`;

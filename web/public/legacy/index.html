@@ -105,7 +105,7 @@
                     </div>
                     <div class="bg-slate-900 p-3 rounded border border-slate-800 mt-3">
                         <span class="text-[9px] uppercase font-bold text-slate-500">Build Path:</span>
-                        <div id="lvlExpr" class="text-sm math-font font-bold text-cyan-300 mt-1">1 + 2</div>
+                        <div id="lvlExpr" class="text-xs math-font font-bold text-cyan-300 mt-1">Shown large in play area</div>
                     </div>
                     <div class="bg-slate-900 p-3 rounded border border-slate-800 mt-3">
                         <span class="text-[9px] uppercase font-bold text-slate-500">Style Pillar:</span>
@@ -233,6 +233,7 @@
             <div class="absolute inset-0 pointer-events-none opacity-[0.05] bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:40px_40px]"></div>
 
             <canvas id="physicsCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+            <div id="equationBackdropDisplay" class="equation-backdrop-display math-font" aria-live="polite">1 + 2 = 3</div>
             <div id="storyBeatBanner" class="absolute top-5 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-slate-950/85 border border-slate-700 text-[10px] font-black tracking-wider text-cyan-300 pointer-events-none">
                 STORY BEAT: CALIBRATING MATH REALM
             </div>
@@ -240,18 +241,18 @@
             <!-- Touch Controls Overlay -->
             <div id="touchControlsOverlay" class="absolute bottom-3 md:bottom-5 left-3 md:left-5 right-3 md:right-5 flex justify-between pointer-events-none select-none hidden">
                 <div class="flex gap-2 pointer-events-auto">
-                    <button id="leftTouch" class="w-14 h-14 rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-slate-300 active:bg-amber-500 active:text-slate-950">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                    <button id="leftTouch" class="touch-btn touch-btn-arrow rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-slate-100 active:bg-amber-500 active:text-slate-950">
+                        LEFT
                     </button>
-                    <button id="rightTouch" class="w-14 h-14 rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-slate-300 active:bg-amber-500 active:text-slate-950">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                    <button id="rightTouch" class="touch-btn touch-btn-arrow rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-slate-100 active:bg-amber-500 active:text-slate-950">
+                        RIGHT
                     </button>
                 </div>
                 <div class="grid grid-cols-2 gap-2 pointer-events-auto">
-                    <button id="grabTouch" class="w-14 h-14 rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-[10px] font-black text-slate-300 active:bg-purple-500 active:text-white">GRAB</button>
-                    <button id="swingTouch" class="w-14 h-14 rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-[10px] font-black text-slate-300 active:bg-cyan-500 active:text-slate-950">SWING</button>
-                    <button id="breakTouch" class="w-14 h-14 rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-[10px] font-black text-slate-300 active:bg-rose-500 active:text-white">BREAK</button>
-                    <button id="jumpTouch" class="w-14 h-14 rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-[10px] font-black text-slate-300 active:bg-blue-500 active:text-white">JUMP</button>
+                    <button id="grabTouch" class="touch-btn rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-slate-100 active:bg-purple-500 active:text-white">GRAB</button>
+                    <button id="swingTouch" class="touch-btn rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-slate-100 active:bg-cyan-500 active:text-slate-950">SWING</button>
+                    <button id="breakTouch" class="touch-btn rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-slate-100 active:bg-rose-500 active:text-white">BREAK</button>
+                    <button id="jumpTouch" class="touch-btn rounded-full bg-slate-900/90 border border-slate-700/50 flex items-center justify-center text-slate-100 active:bg-blue-500 active:text-white">JUMP</button>
                 </div>
             </div>
 

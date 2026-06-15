@@ -1,62 +1,79 @@
-import { useEffect, useState } from 'react'
-import { AppHeader } from './components/AppHeader'
+import { useState } from 'react'
 import { GameViewport } from './components/GameViewport'
-import { MigrationTodoPanel } from './components/MigrationTodoPanel'
-import { migrationTasks } from './data/migrationTasks'
+
+type GameMode = 'campaign' | 'sandbox'
 
 function App() {
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
+  const [screen, setScreen] = useState<'menu' | 'game' | 'legacy'>('menu')
+  const [showHowToPlay, setShowHowToPlay] = useState(false)
+  const [startMode, setStartMode] = useState<GameMode>('campaign')
+  const [sessionId, setSessionId] = useState(0)
 
-  useEffect(() => {
-    const media = window.matchMedia('(min-width: 1025px)')
-    const onDesktop = (event: MediaQueryListEvent) => {
-      if (event.matches) {
-        setIsPanelOpen(false)
-      }
-    }
-
-    if (media.addEventListener) {
-      media.addEventListener('change', onDesktop)
-      return () => media.removeEventListener('change', onDesktop)
-    }
-
-    media.addListener(onDesktop)
-    return () => media.removeListener(onDesktop)
-  }, [])
-
-  useEffect(() => {
-    const onEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsPanelOpen(false)
-      }
-    }
-
-    window.addEventListener('keydown', onEscape)
-    return () => window.removeEventListener('keydown', onEscape)
-  }, [])
+  const startGame = (mode: GameMode) => {
+    setStartMode(mode)
+    setSessionId((prev) => prev + 1)
+    setScreen('game')
+  }
 
   return (
-    <div className={`app-shell ${isPanelOpen ? 'panel-open' : ''}`}>
-      <AppHeader
-        title="Stickman Math React Migration"
-        subtitle="Phase 1 complete: React shell + legacy game bridge."
-        isPanelOpen={isPanelOpen}
-        onTogglePanel={() => setIsPanelOpen((prev) => !prev)}
-      />
+    <div className="app-shell app-shell-game">
+      {screen === 'menu' ? (
+        <main className="menu-screen">
+          <section className="menu-card" aria-label="Main menu">
+            <h1>Stickman Math</h1>
+            <p>Choose a mode and jump in.</p>
+            <div className="menu-actions">
+              <button type="button" className="menu-btn primary" onClick={() => startGame('campaign')}>
+                Play
+              </button>
+              <button type="button" className="menu-btn" onClick={() => setShowHowToPlay(true)}>
+                How To Play
+              </button>
+              <button type="button" className="menu-btn" onClick={() => startGame('sandbox')}>
+                Sandbox
+              </button>
+              <button type="button" className="menu-btn" onClick={() => setScreen('legacy')}>
+                Legacy Mode
+              </button>
+            </div>
+          </section>
 
-      <main className="app-main">
-        <button
-          type="button"
-          className="drawer-scrim"
-          aria-label="Close side panel"
-          onClick={() => setIsPanelOpen(false)}
-        />
-        <MigrationTodoPanel
-          tasks={migrationTasks}
-          className="task-panel task-panel-drawer"
-        />
-        <GameViewport />
-      </main>
+          {showHowToPlay ? (
+            <div className="howto-overlay" role="dialog" aria-modal="true" aria-label="How to play">
+              <div className="howto-card">
+                <h2>How To Play</h2>
+                <p>Move: A/D or Left/Right arrows</p>
+                <p>Jump/Fly: W/S or Up/Down arrows</p>
+                <p>Grab/Throw: E or Left Click</p>
+                <p>Swing Weapon: Q or Right Click</p>
+                <p>Break: X | Undo: Z</p>
+                <button type="button" className="menu-btn primary" onClick={() => setShowHowToPlay(false)}>
+                  Back
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </main>
+      ) : screen === 'game' ? (
+        <main className="game-only-shell">
+          <button type="button" className="menu-fab" onClick={() => setScreen('menu')}>
+            Menu
+          </button>
+          <GameViewport key={sessionId} initialMode={startMode} />
+        </main>
+      ) : (
+        <main className="legacy-shell">
+          <button type="button" className="menu-fab" onClick={() => setScreen('menu')}>
+            Menu
+          </button>
+          <iframe
+            title="Legacy Stickman Math"
+            src="/legacy/index.html"
+            className="legacy-frame"
+            allow="fullscreen"
+          />
+        </main>
+      )}
     </div>
   )
 }

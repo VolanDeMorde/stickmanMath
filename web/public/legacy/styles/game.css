@@ -29,6 +29,39 @@ body {
     text-shadow: 0 0 10px rgba(34, 211, 238, 0.35);
 }
 
+.equation-backdrop-display {
+    position: absolute;
+    left: 50%;
+    top: 53%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
+    text-align: center;
+    font-weight: 900;
+    font-size: clamp(2.1rem, 6.5vw, 5.2rem);
+    letter-spacing: 0.04em;
+    color: rgba(56, 189, 248, 0.23);
+    text-shadow: 0 0 18px rgba(34, 211, 238, 0.24);
+    white-space: nowrap;
+    max-width: 92%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.touch-btn {
+    width: 5.2rem;
+    height: 5.2rem;
+    font-size: 0.95rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    box-shadow: 0 10px 22px rgba(2, 6, 23, 0.45);
+}
+
+.touch-btn-arrow {
+    width: 6rem;
+    font-size: 0.9rem;
+}
+
 #touchControlsOverlay button {
     touch-action: manipulation;
     user-select: none;
@@ -78,5 +111,23 @@ body {
     body.sidebar-open .sidebar-scrim {
         opacity: 1;
         pointer-events: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .equation-backdrop-display {
+        top: 45%;
+        font-size: clamp(1.8rem, 8.2vw, 2.9rem);
+        color: rgba(56, 189, 248, 0.27);
+    }
+
+    .touch-btn {
+        width: 4.7rem;
+        height: 4.7rem;
+        font-size: 0.83rem;
+    }
+
+    .touch-btn-arrow {
+        width: 5.3rem;
     }
 }

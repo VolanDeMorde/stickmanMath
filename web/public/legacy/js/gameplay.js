@@ -185,6 +185,10 @@ function setMode(mode) {
     
     document.getElementById('campaignPanel').classList.toggle('hidden', mode !== 'campaign');
     document.getElementById('sandboxPanel').classList.toggle('hidden', mode !== 'sandbox');
+    const equationBackdrop = document.getElementById('equationBackdropDisplay');
+    if (equationBackdrop) {
+        equationBackdrop.style.display = mode === 'campaign' ? 'block' : 'none';
+    }
 
     if (mode === 'sandbox') {
         clearSandbox();
