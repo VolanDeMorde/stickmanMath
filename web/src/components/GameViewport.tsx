@@ -77,6 +77,11 @@ export function GameViewport({ initialMode = 'campaign' }: GameViewportProps) {
     down: false
   })
 
+  function resetRun() {
+    setLevel(createLevel(1))
+    setResetTick((prev) => prev + 1)
+  }
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase()
@@ -116,11 +121,6 @@ export function GameViewport({ initialMode = 'campaign' }: GameViewportProps) {
 
   const holdInput = (key: 'left' | 'right' | 'up' | 'down', value: boolean) => {
     setReactInput((prev) => ({ ...prev, [key]: value }))
-  }
-
-  const resetRun = () => {
-    setLevel(createLevel(1))
-    setResetTick((prev) => prev + 1)
   }
 
   const fireCommand = (type: 'grab' | 'swing' | 'break' | 'undo') => {
