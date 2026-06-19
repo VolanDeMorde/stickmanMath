@@ -4,6 +4,16 @@ type GameCanvasProps = {
   className?: string
   mode: 'campaign' | 'sandbox'
   expression: string
+  displayExpression?: string
+  fractionVisual?: {
+    terms: Array<{
+      numerator: number
+      denominator: number
+      operator: '+' | '-' | null
+    }>
+    resultNumerator: number
+    resultDenominator: number
+  }
   target: number
   stage: number
   isBoss: boolean
@@ -39,6 +49,8 @@ export function GameCanvas({
   className,
   mode,
   expression,
+  displayExpression,
+  fractionVisual,
   target,
   stage,
   isBoss,
@@ -81,6 +93,7 @@ export function GameCanvas({
     const WORLD_H = 600
     let solved = false
     let gateOpen = false
+    let showCollisionDebug = false
     const processedCommands = { ...commandTicksRef.current }
     let storyBeat = isBoss ? `BOSS THEOREM ${stage}` : `STAGE ${stage}`
     let storyBeatTtl = 220
@@ -95,7 +108,7 @@ export function GameCanvas({
     }
     const playerHalfW = 12
     const playerFeetOffset = 24
-    const jumpVelocity = -500
+    const jumpVelocity = -750
     let playerGrounded = false
     let jumpLocked = false
 
@@ -118,7 +131,9 @@ export function GameCanvas({
       x: 530,
       y: 452,
       held: false,
-      type: activeWeapon
+      type: activeWeapon,
+      vx: 0,
+      vy: 0
     }
 
     const originPortal = {
@@ -192,6 +207,8 @@ export function GameCanvas({
       minusWeapon.x = parsed.minusWeapon.x
       minusWeapon.y = parsed.minusWeapon.y
       minusWeapon.held = parsed.minusWeapon.held
+      minusWeapon.vx = parsed.minusWeapon.vx || 0
+      minusWeapon.vy = parsed.minusWeapon.vy || 0
     }
 
     const dist = (ax: number, ay: number, bx: number, by: number) => {
@@ -357,6 +374,75 @@ export function GameCanvas({
       canvas.height = Math.max(1, height)
     }
 
+    const drawFractionTile = (x: number, y: number, numerator: number, denominator: number, tint: string) => {
+      const tileW = 78
+      const tileH = 54
+      const barX = x - tileW / 2 + 10
+      const barY = y + 10
+      const barW = tileW - 20
+      const segmentW = barW / denominator
+
+      ctx.fillStyle = 'rgba(6, 14, 26, 0.92)'
+      ctx.strokeStyle = 'rgba(125, 211, 252, 0.6)'
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.roundRect(x - tileW / 2, y - tileH / 2, tileW, tileH, 10)
+      ctx.fill()
+      ctx.stroke()
+
+      for (let i = 0; i < denominator; i += 1) {
+        ctx.fillStyle = i < numerator ? tint : 'rgba(148, 163, 184, 0.2)'
+        ctx.fillRect(barX + i * segmentW + 1, barY, Math.max(1, segmentW - 2), 12)
+      }
+
+      ctx.fillStyle = '#dbeafe'
+      ctx.font = '700 12px "Fira Code", monospace'
+      ctx.textAlign = 'center'
+      ctx.fillText(`${numerator}/${denominator}`, x, y - 8)
+    }
+
+    const drawFractionEquation = () => {
+      if (!fractionVisual) return
+
+      const cardW = Math.min(canvas.width - 40, 560)
+      const cardX = canvas.width * 0.5 - cardW * 0.5
+      const cardY = 56
+      const cardH = 86
+      ctx.fillStyle = 'rgba(7, 18, 32, 0.84)'
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)'
+      ctx.lineWidth = 1.5
+      ctx.beginPath()
+      ctx.roundRect(cardX, cardY, cardW, cardH, 16)
+      ctx.fill()
+      ctx.stroke()
+
+      const unitHint = `Fractions with denominator ${fractionVisual.resultDenominator}`
+      ctx.fillStyle = 'rgba(147, 197, 253, 0.95)'
+      ctx.font = '700 11px "Fira Code", monospace'
+      ctx.textAlign = 'center'
+      ctx.fillText(unitHint, canvas.width * 0.5, cardY + 16)
+
+      const termSpacing = 124
+      const startX = canvas.width * 0.5 - ((fractionVisual.terms.length - 1) * termSpacing) / 2
+      const tileY = cardY + 47
+
+      fractionVisual.terms.forEach((term, index) => {
+        const x = startX + index * termSpacing
+        if (term.operator) {
+          ctx.fillStyle = '#a7f3d0'
+          ctx.font = '900 24px "Fira Code", monospace'
+          ctx.fillText(term.operator, x - termSpacing / 2, tileY + 3)
+        }
+        drawFractionTile(x, tileY, term.numerator, term.denominator, 'rgba(74, 222, 128, 0.92)')
+      })
+
+      const rightX = startX + fractionVisual.terms.length * termSpacing - termSpacing / 2
+      ctx.fillStyle = '#f0f9ff'
+      ctx.font = '900 24px "Fira Code", monospace'
+      ctx.fillText('=', rightX, tileY + 3)
+      drawFractionTile(rightX + 60, tileY, fractionVisual.resultNumerator, fractionVisual.resultDenominator, 'rgba(56, 189, 248, 0.95)')
+    }
+
     const draw = (timestamp: number) => {
       if (!lastFrameTime) {
         lastFrameTime = timestamp
@@ -403,12 +489,12 @@ export function GameCanvas({
         camera.viewW = camera.viewH * aspect
       }
 
-      const maxVX = 320
+      const maxVX = 460
       const maxVY = 860
-      const accel = 900
-      const gravity = 1350
-      const groundDrag = 0.78
-      const airDrag = 0.95
+      const accel = 1500
+      const gravity = 1450
+      const groundDrag = 0.95
+      const airDrag = 0.97
       const prevY = player.y
 
       if (inputRef.current.left) player.vx -= accel * dt
@@ -454,7 +540,7 @@ export function GameCanvas({
 
       playerGrounded = false
 
-      const floorTop = WORLD_H - 52
+      const floorTop = WORLD_H - 28
       const feetY = player.y + playerFeetOffset
       if (feetY >= floorTop && player.vy >= 0) {
         player.y = floorTop - playerFeetOffset
@@ -513,6 +599,8 @@ export function GameCanvas({
           return
         }
 
+        const blockSize = Math.min(80, Math.max(46, 42 + Math.abs(block.value) * 2))
+        const blockHalfSize = blockSize * 0.5
         block.vy += 650 * dt
         block.vx *= Math.pow(0.985, dt * 60)
         block.vy *= Math.pow(0.995, dt * 60)
@@ -528,9 +616,9 @@ export function GameCanvas({
           block.vx *= -0.4
         }
 
-        const floorY = WORLD_H - 52
-        if (block.y > floorY) {
-          block.y = floorY
+        const floorY = WORLD_H - 28
+        if (block.y + blockHalfSize > floorY) {
+          block.y = floorY - blockHalfSize
           block.vy *= -0.22
           block.vx *= Math.pow(0.95, dt * 60)
         }
@@ -539,8 +627,8 @@ export function GameCanvas({
           const top = platform.y
           const left = platform.x
           const right = platform.x + platform.w
-          if (block.x > left && block.x < right && block.y > top - 18 && block.y < top + 14 && block.vy >= 0) {
-            block.y = top - 18
+          if (block.x > left && block.x < right && block.y + blockHalfSize > top && block.y - blockHalfSize < top + 4 && block.vy >= 0) {
+            block.y = top - blockHalfSize
             block.vy *= -0.18
             block.vx *= Math.pow(0.96, dt * 60)
           }
@@ -583,6 +671,41 @@ export function GameCanvas({
       if (minusWeapon.held) {
         minusWeapon.x = player.x + (player.facingRight ? 26 : -26)
         minusWeapon.y = player.y - 10
+        minusWeapon.vx = 0
+        minusWeapon.vy = 0
+      } else {
+        minusWeapon.vy += 650 * dt
+        minusWeapon.vx *= Math.pow(0.985, dt * 60)
+        minusWeapon.vy *= Math.pow(0.995, dt * 60)
+        minusWeapon.x += minusWeapon.vx * dt
+        minusWeapon.y += minusWeapon.vy * dt
+
+        if (minusWeapon.x < 20) {
+          minusWeapon.x = 20
+          minusWeapon.vx *= -0.4
+        }
+        if (minusWeapon.x > WORLD_W - 20) {
+          minusWeapon.x = WORLD_W - 20
+          minusWeapon.vx *= -0.4
+        }
+
+        const weaponFloorY = WORLD_H - 28
+        if (minusWeapon.y + 16 > weaponFloorY) {
+          minusWeapon.y = weaponFloorY - 16
+          minusWeapon.vy *= -0.22
+          minusWeapon.vx *= Math.pow(0.95, dt * 60)
+        }
+
+        platforms.forEach((platform) => {
+          const top = platform.y
+          const left = platform.x
+          const right = platform.x + platform.w
+          if (minusWeapon.x > left && minusWeapon.x < right && minusWeapon.y + 16 > top && minusWeapon.y - 16 < top + 4 && minusWeapon.vy >= 0) {
+            minusWeapon.y = top - 16
+            minusWeapon.vy *= -0.18
+            minusWeapon.vx *= Math.pow(0.96, dt * 60)
+          }
+        })
       }
 
       ctx.save()
@@ -624,10 +747,38 @@ export function GameCanvas({
         ctx.stroke()
       })
 
-      ctx.fillStyle = 'rgba(34, 211, 238, 0.2)'
-      ctx.font = '900 58px "Fira Code", monospace'
-      ctx.textAlign = 'center'
-      ctx.fillText(`${expression} = ${target}`, WORLD_W * 0.5, 110)
+      if (showCollisionDebug) {
+        ctx.save()
+        ctx.strokeStyle = 'rgba(255, 99, 132, 0.95)'
+        ctx.lineWidth = 2
+        ctx.setLineDash([8, 6])
+
+        const floorTop = WORLD_H - 28
+        ctx.beginPath()
+        ctx.moveTo(0, floorTop)
+        ctx.lineTo(WORLD_W, floorTop)
+        ctx.stroke()
+
+        platforms.forEach((platform) => {
+          ctx.beginPath()
+          ctx.moveTo(platform.x, platform.y)
+          ctx.lineTo(platform.x + platform.w, platform.y)
+          ctx.stroke()
+        })
+
+        ctx.setLineDash([])
+        ctx.restore()
+      }
+
+      if (fractionVisual) {
+        drawFractionEquation()
+      } else {
+        const headline = displayExpression ?? expression
+        ctx.fillStyle = 'rgba(34, 211, 238, 0.2)'
+        ctx.font = '900 58px "Fira Code", monospace'
+        ctx.textAlign = 'center'
+        ctx.fillText(`${headline} = ${target}`, WORLD_W * 0.5, 110)
+      }
 
       const gateX = 850
       const gateY = target < 0 ? 150 : 390
@@ -769,7 +920,8 @@ export function GameCanvas({
 
       ctx.font = '600 12px "Fira Code", monospace'
       ctx.fillStyle = 'rgba(157, 180, 202, 0.85)'
-      ctx.fillText(`${mode.toUpperCase()} | ${minusWeapon.type}`, 24, 34)
+      ctx.textAlign = 'center'
+      ctx.fillText(`${mode.toUpperCase()} | ${minusWeapon.type}`, canvas.width * 0.64, 34)
 
       if (storyBeatTtl > 0) {
         const alpha = Math.min(1, storyBeatTtl / 36)
@@ -787,6 +939,13 @@ export function GameCanvas({
         ctx.font = '700 12px "Fira Code", monospace'
         ctx.textAlign = 'center'
         ctx.fillText(storyBeat, canvas.width * 0.5, bannerY + 22)
+      }
+
+      if (showCollisionDebug) {
+        ctx.textAlign = 'left'
+        ctx.fillStyle = 'rgba(255, 153, 172, 0.95)'
+        ctx.font = '700 11px "Fira Code", monospace'
+        ctx.fillText('COLLISION DEBUG ON (press F2)', 24, 52)
       }
 
       raf = requestAnimationFrame(draw)
@@ -808,13 +967,22 @@ export function GameCanvas({
       toggleGrab()
     }
 
+    const handleDebugToggle = (event: KeyboardEvent) => {
+      if (event.key === 'F2') {
+        event.preventDefault()
+        showCollisionDebug = !showCollisionDebug
+      }
+    }
+
     canvas.addEventListener('click', handleCanvasClick)
     canvas.addEventListener('contextmenu', handleContextMenu)
+    window.addEventListener('keydown', handleDebugToggle)
 
     return () => {
       window.removeEventListener('resize', resize)
       canvas.removeEventListener('click', handleCanvasClick)
       canvas.removeEventListener('contextmenu', handleContextMenu)
+      window.removeEventListener('keydown', handleDebugToggle)
       cancelAnimationFrame(raf)
     }
   }, [activeWeapon, cameraMode, expression, followStrength, isBoss, layout, mode, resetTick, stage, target])

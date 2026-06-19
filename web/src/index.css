@@ -80,6 +80,47 @@ body {
   gap: 10px;
 }
 
+.menu-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.menu-field {
+  display: grid;
+  gap: 6px;
+}
+
+.menu-field span {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.73rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.menu-field select {
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(10, 23, 36, 0.96);
+  color: var(--text);
+  padding: 10px 11px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.84rem;
+}
+
+.menu-field-full {
+  grid-column: 1 / -1;
+}
+
+.menu-selection-hint {
+  margin: 0 0 16px;
+  color: #b8cee5;
+  font-size: 0.84rem;
+  font-family: 'Fira Code', monospace;
+}
+
 .menu-btn {
   border: 1px solid var(--panel-border);
   border-radius: 12px;
@@ -126,7 +167,7 @@ body {
 }
 
 .game-only-shell {
-  min-height: calc(100vh - 20px);
+  min-height: calc(100dvh - 20px);
   position: relative;
 }
 
@@ -452,7 +493,7 @@ body {
   width: 100%;
   height: 100%;
   border: 0;
-  min-height: 640px;
+  min-height: clamp(420px, 72dvh, 760px);
 }
 
 .react-canvas-shell {
@@ -460,20 +501,234 @@ body {
   display: block;
 }
 
+.react-game-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: calc(100dvh - 20px);
+  height: 100%;
+}
+
+.level-sidebar {
+  border-right: 1px solid var(--panel-border);
+  background: rgba(8, 18, 31, 0.94);
+  margin-top: 42px;
+  padding: 10px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
+}
+
+.level-sidebar.minimized {
+  width: 56px;
+  padding: 10px 8px;
+}
+
+.level-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.level-sidebar-header h2 {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.level-sidebar-toggle {
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: #0a1724;
+  color: var(--text);
+  width: 36px;
+  height: 32px;
+  font-family: 'Fira Code', monospace;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.level-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.level-chip {
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: #0a1724;
+  color: var(--text);
+  min-height: 36px;
+  text-align: left;
+  padding: 7px 10px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.level-chip.active {
+  background: var(--accent);
+  color: #0f1b29;
+  border-color: #ffc74f;
+  font-weight: 700;
+}
+
+.level-top-right {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 25;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: rgba(7, 18, 30, 0.92);
+  color: #d7ebff;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+}
+
+.level-settings-top-right {
+  position: absolute;
+  top: 44px;
+  right: 12px;
+  z-index: 25;
+  max-width: min(70vw, 420px);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: rgba(7, 18, 30, 0.92);
+  color: #b9d3ec;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  padding: 6px 9px;
+  text-align: right;
+  pointer-events: none;
+}
+
 .react-canvas {
   width: 100%;
   height: 100%;
   display: block;
-  min-height: 640px;
+  min-height: clamp(420px, 72dvh, 760px);
 }
 
 .react-touch-pad {
   position: absolute;
+  left: 14px;
   right: 14px;
   bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 14px;
+}
+
+.touch-hand {
   display: grid;
   gap: 8px;
-  justify-items: center;
+}
+
+.touch-hand-left {
+  justify-items: start;
+}
+
+.touch-hand-right {
+  justify-items: end;
+}
+
+.analog-stick {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  border: 1px solid rgba(125, 211, 252, 0.25);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(7, 18, 31, 0.92) 0%, rgba(6, 14, 24, 0.98) 60%, rgba(3, 9, 16, 1) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(148, 163, 184, 0.08),
+    0 14px 30px rgba(0, 0, 0, 0.38);
+  padding: 0;
+  touch-action: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.analog-stick::before {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  border: 1px dashed rgba(125, 211, 252, 0.18);
+}
+
+.analog-stick::after {
+  content: '';
+  position: absolute;
+  inset: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: rgba(56, 189, 248, 0.22);
+}
+
+.analog-stick.active {
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.analog-stick-ring,
+.analog-stick-thumb,
+.analog-stick-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.analog-stick-ring {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+}
+
+.analog-stick-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(125, 211, 252, 0.5);
+  background: radial-gradient(circle at 35% 30%, rgba(165, 243, 252, 0.96), rgba(14, 116, 144, 0.96) 60%, rgba(8, 47, 73, 0.98) 100%);
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.34),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  transition: transform 110ms cubic-bezier(0.22, 1, 0.36, 1);
+  --stick-x: 0px;
+  --stick-y: 0px;
+  --stick-scale: 1;
+  transform: translate(calc(-50% + var(--stick-x)), calc(-50% + var(--stick-y))) scale(var(--stick-scale));
+}
+
+.analog-stick-label {
+  z-index: 1;
+  transform: translate(-50%, 78px);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(206, 235, 255, 0.84);
+  pointer-events: none;
+}
+
+.analog-stick:focus-visible {
+  outline: 2px solid rgba(255, 183, 3, 0.8);
+  outline-offset: 3px;
 }
 
 .pad-row {
@@ -485,7 +740,7 @@ body {
   border: 1px solid var(--panel-border);
   background: rgba(6, 14, 24, 0.95);
   color: var(--text);
-  min-width: 82px;
+  min-width: 78px;
   min-height: 56px;
   padding: 12px 14px;
   border-radius: 14px;
@@ -510,7 +765,31 @@ body {
   }
 
   .game-frame {
-    min-height: 72vh;
+    min-height: clamp(400px, 66dvh, 720px);
+  }
+
+  .react-game-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    min-height: calc(100dvh - 16px);
+  }
+
+  .level-sidebar,
+  .level-sidebar.minimized {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--panel-border);
+    margin-top: 36px;
+    padding: 8px;
+  }
+
+  .level-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .level-chip {
+    text-align: center;
+    padding: 8px;
   }
 
   .bridge-status {
@@ -519,12 +798,32 @@ body {
 
   .react-touch-pad {
     left: 10px;
-    right: auto;
+    right: 10px;
     bottom: 10px;
+    gap: 10px;
+  }
+
+  .touch-hand {
+    gap: 7px;
+  }
+
+  .analog-stick {
+    width: 118px;
+    height: 118px;
+  }
+
+  .analog-stick-ring {
+    width: 98px;
+    height: 98px;
+  }
+
+  .analog-stick-thumb {
+    width: 46px;
+    height: 46px;
   }
 
   .pad-btn {
-    min-width: 78px;
+    min-width: 72px;
     min-height: 54px;
     padding: 11px 13px;
   }
@@ -570,6 +869,30 @@ body {
   }
 }
 
+@media (max-width: 1024px) and (orientation: landscape) {
+  .react-game-layout {
+    grid-template-columns: 180px 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  .level-sidebar,
+  .level-sidebar.minimized {
+    border-right: 1px solid var(--panel-border);
+    border-bottom: 0;
+    margin-top: 30px;
+    width: 100%;
+  }
+
+  .level-list {
+    grid-template-columns: 1fr;
+  }
+
+  .game-frame,
+  .react-canvas {
+    min-height: clamp(340px, 82dvh, 620px);
+  }
+}
+
 @media (max-width: 640px) {
   .app-shell {
     padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
@@ -587,6 +910,10 @@ body {
 
   .menu-btn {
     min-height: 48px;
+  }
+
+  .menu-config-grid {
+    grid-template-columns: 1fr;
   }
 
   .menu-fab {
@@ -674,11 +1001,45 @@ body {
     min-height: 64vh;
   }
 
+  .level-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .level-top-right {
+    top: 9px;
+    right: 9px;
+    font-size: 0.72rem;
+    padding: 5px 9px;
+  }
+
+  .level-settings-top-right {
+    top: 38px;
+    right: 9px;
+    max-width: min(82vw, 320px);
+    font-size: 0.62rem;
+    padding: 5px 7px;
+  }
+
   .react-touch-pad {
     left: 8px;
-    right: auto;
+    right: 8px;
     bottom: 8px;
-    gap: 6px;
+    gap: 8px;
+  }
+
+  .analog-stick {
+    width: 110px;
+    height: 110px;
+  }
+
+  .analog-stick-ring {
+    width: 90px;
+    height: 90px;
+  }
+
+  .analog-stick-thumb {
+    width: 42px;
+    height: 42px;
   }
 
   .pad-row {
@@ -686,10 +1047,19 @@ body {
   }
 
   .pad-btn {
-    min-width: 70px;
+    min-width: 62px;
     min-height: 50px;
-    padding: 9px 11px;
-    font-size: 0.82rem;
+    padding: 9px 9px;
+    font-size: 0.76rem;
+  }
+
+  .react-game-layout {
+    min-height: calc(100dvh - 16px);
+  }
+
+  .level-sidebar,
+  .level-sidebar.minimized {
+    margin-top: 30px;
   }
 
   .task-panel-drawer {
@@ -702,6 +1072,23 @@ body {
 
   .follow-range {
     height: 28px;
+  }
+}
+
+@media (max-width: 640px) and (orientation: portrait) {
+  .analog-stick {
+    width: 134px;
+    height: 134px;
+  }
+
+  .analog-stick-ring {
+    width: 114px;
+    height: 114px;
+  }
+
+  .analog-stick-thumb {
+    width: 56px;
+    height: 56px;
   }
 }
 
